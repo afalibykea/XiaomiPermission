@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private static final int RC_SMS_PERM = 122;
     private static final int RC_CAMERA_PERM = 123;
     private static final int RC_LOCATION_CONTACTS_PERM = 124;
+    private static final int RC_STORAGE_PERM = 125;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,14 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             }
         });
 
+        //Button click listener that will request single permission SMS
+        findViewById(R.id.button_storage).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                StorageTask();
+            }
+        });
+
 
     }
 
@@ -84,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private void smsTask() {
         if (EasyPermissions.hasPermissions(this, Manifest.permission.READ_SMS)) {
             // Have permission, do the thing!
-            Toast.makeText(this, "TODO: SMS things", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "SMS Permission granted", Toast.LENGTH_LONG).show();
         } else {
             // Request one permission
             EasyPermissions.requestPermissions(this, getString(R.string.rationale_sms),
@@ -97,7 +106,8 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     public void cameraTask() {
         if (hasCameraPermission()) {
             // Have permission, do the thing!
-            Toast.makeText(this, "TODO: Camera things", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Camera Permission granted",
+                    Toast.LENGTH_LONG).show();
         } else {
             // Ask for one permission
             EasyPermissions.requestPermissions(
@@ -112,14 +122,31 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     public void locationAndContactsTask() {
         if (hasLocationAndContactsPermissions()) {
             // Have permissions, do the thing!
-            Toast.makeText(this, "TODO: Location and Contacts things", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Location and Contacts permission granted",
+                    Toast.LENGTH_LONG).show();
+        } else {
+            // Ask for both permissions
+            EasyPermissions.requestPermissions(
+                    this,
+                    getString(R.string.rationale_storage),
+                    RC_LOCATION_CONTACTS_PERM,
+                    LOCATION_AND_CONTACTS);
+        }
+    }
+
+    @AfterPermissionGranted(RC_STORAGE_PERM)
+    public void StorageTask() {
+        if (hasStoragePermission()) {
+            // Have permissions, do the thing!
+            Toast.makeText(this, "Storage permission granted",
+                    Toast.LENGTH_LONG).show();
         } else {
             // Ask for both permissions
             EasyPermissions.requestPermissions(
                     this,
                     getString(R.string.rationale_location_contacts),
-                    RC_LOCATION_CONTACTS_PERM,
-                    LOCATION_AND_CONTACTS);
+                    RC_STORAGE_PERM,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
     }
     //endregion
